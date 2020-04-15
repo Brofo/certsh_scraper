@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """crtsh.py - This script allows you to get domains and subdomains related to
 a company/parent domain based on SSL Certfications at crt.sh
@@ -39,7 +40,7 @@ class crt_handler(Session):
             'https': proxy
         }
     
-    def get_subdomains(self, domain: str) -> set:
+    def get_subdomains(self, parent_domain: str) -> set:
         """Sends request to crt site and scrapes to
         find subdomains in response html
 
@@ -53,7 +54,7 @@ class crt_handler(Session):
         """
         domains = set()
 
-        params = {"q": domain}
+        params = {"q": parent_domain}
         with self.get(SITE, params=params) as response:
             soup = BeautifulSoup(response.content, "html.parser")
             table_contents = soup.find_all("table")
@@ -64,8 +65,8 @@ class crt_handler(Session):
             for row_contents in table_contents:
                 site_box = row_contents.find_all("td")
                 if site_box:
-                    domain = site_box[4].text.replace('*.', '')
-                    domains.add(domain)
+                    domain = site_box[4].get_text(' ').split()
+                    [domains.add(d.replace('*.', '')) for d in domain if parent_domain in d]
         
         return domains
     
