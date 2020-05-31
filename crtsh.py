@@ -3,18 +3,21 @@
 """crtsh.py - This script allows you to get domains and subdomains related to
 a company/parent domain based on SSL Certfications at crt.sh
 """
+
 __author__ = "ESBarto"
 __license__ = "GPL"
 
-# Libraries
+# Python standard libraries
 from requests.sessions import Session
 from collections import OrderedDict
 from bs4 import BeautifulSoup
 from argparse import ArgumentParser
 
+
 # Site to scrap and headers
 SITE = "https://crt.sh/"
-DEFAULT_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0"
+DEFAULT_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) \
+Gecko/20100101 Firefox/68.0"
 DEFAULT_HEADERS = OrderedDict(
     (
         ("User-Agent", DEFAULT_AGENT),
@@ -23,13 +26,13 @@ DEFAULT_HEADERS = OrderedDict(
     )
 )
 
+
 class crt_handler(Session):
     """crt_handler manage requests and BeautifulSoup
     to scrap and get tables information in site response
 
-    Parameters
-    ----------
-        proxy : str - An optional proxy (https://127.0.0.1:8080)
+    :param proxy: An optional proxy (https://127.0.0.1:8080)
+    :type proxy: str
     """
     def __init__(self, proxy: str = None):
         super().__init__()
@@ -44,13 +47,11 @@ class crt_handler(Session):
         """Sends request to crt site and scrapes to
         find subdomains in response html
 
-        Parameters
-        ----------
-            domain : str - Domain to get info
+        :param domain: Domain to get info
+        :type domain: str
 
-        Returns
-        -------
-            set
+        :returns: domains:
+        :rtype: set
         """
         domains = set()
 
@@ -73,12 +74,12 @@ class crt_handler(Session):
     def print_domains(self, domains: set) -> None:
         """Prints domains on screen
         
-        Parameters
-        ----------
-            domains : set - A set of domains
+        :param domains: A set of domains
+        :type domains: set
         """
         for domain in domains:
             print(domain)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
